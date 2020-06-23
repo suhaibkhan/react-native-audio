@@ -1,4 +1,3 @@
-
 Record audio in iOS or Android React Native apps.
 
 ## MAINTENANCE STATUS
@@ -21,18 +20,18 @@ from the network, please submit a PR to that project or try `react-native-video`
 Install the npm package and link it to your project:
 
 ```
-npm install react-native-audio --save
+npm install git+https://github.com/suhaibkhan/react-native-audio.git
 react-native link react-native-audio
 ```
 
-On *iOS* you need to add a usage description to `Info.plist`:
+On _iOS_ you need to add a usage description to `Info.plist`:
 
 ```
 <key>NSMicrophoneUsageDescription</key>
 <string>This sample uses the microphone to record your speech and convert it to text.</string>
 ```
 
-On *Android* you need to add a permission to `AndroidManifest.xml`:
+On _Android_ you need to add a permission to `AndroidManifest.xml`:
 
 ```
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -45,12 +44,14 @@ This is not necessary if you have used `react-native link`
 #### Android
 
 Edit `android/settings.gradle` to declare the project directory:
+
 ```
 include ':react-native-audio'
 project(':react-native-audio').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-audio/android')
 ```
 
 Edit `android/app/build.gradle` to declare the project dependency:
+
 ```
 dependencies {
   ...
@@ -81,7 +82,6 @@ public class MainApplication extends Application implements ReactApplication {
 Drag `node_modules/react-native-audio/ios/RNAudio.xcoderproj` into your project's Libraries on Xcode.
 
 Add `libRNAudio.a` into Link Binary With Libraries from Xcode - Build Phases.
-
 
 ### Running the Sample App
 
@@ -130,18 +130,18 @@ If you want to upload the audio, it might be best to do it on the native thread 
 
 #### iOS-only fields
 
-Use `MeteringEnabled` boolean to enable audio metering. The following values are available on the recording progress object. 
+Use `MeteringEnabled` boolean to enable audio metering. The following values are available on the recording progress object.
 
-| Name | Related AVAudioRecorder parameter | Description |
-|------|-----------------------------------|-------------|
-|currentMetering| averagePowerForChannel | The current average power, in decibels, for the sound being recorded. A return value of 0 dB indicates full scale, or maximum power; a return value of -160 dB indicates minimum power (that is, near silence). If the signal provided to the audio recorder exceeds ±full scale, then the return value may exceed 0 (that is, it may enter the positive range).|
-|currentPeakMetering | peakPowerForChannel | The current peak power, in decibels, for the sound being recorded. A return value of 0 dB indicates full scale, or maximum power; a return value of -160 dB indicates minimum power (that is, near silence). If the signal provided to the audio recorder exceeds ±full scale, then the return value may exceed 0 (that is, it may enter the positive range).|
+| Name                | Related AVAudioRecorder parameter | Description                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| currentMetering     | averagePowerForChannel            | The current average power, in decibels, for the sound being recorded. A return value of 0 dB indicates full scale, or maximum power; a return value of -160 dB indicates minimum power (that is, near silence). If the signal provided to the audio recorder exceeds ±full scale, then the return value may exceed 0 (that is, it may enter the positive range). |
+| currentPeakMetering | peakPowerForChannel               | The current peak power, in decibels, for the sound being recorded. A return value of 0 dB indicates full scale, or maximum power; a return value of -160 dB indicates minimum power (that is, near silence). If the signal provided to the audio recorder exceeds ±full scale, then the return value may exceed 0 (that is, it may enter the positive range).    |
 
-For example: 
+For example:
 
 ```js
 AudioRecorder.onProgress = (data) => {
-    console.log(data.currentMetering, data.currentPeakMetering)
+  console.log(data.currentMetering, data.currentPeakMetering);
 };
 ```
 
@@ -155,7 +155,7 @@ AudioSource: int (constants) (Possible values: AudioSource.DEFAULT, AudioSource.
 
 See [the example](https://github.com/jsierles/react-native-audio/blob/master/AudioExample/index.ios.js) for more details. For playing audio check out [React Native Sound](https://github.com/zmxv/react-native-sound)
 
-MP3 recording is *not supported* since the underlying platforms do not support it.
+MP3 recording is _not supported_ since the underlying platforms do not support it.
 
 Thanks to Brent Vatne, Johannes Lumpe, Kureev Alexey, Matthew Hartman and Rakan Nimer for their assistance.
 
