@@ -182,7 +182,6 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
       default:
         Log.d("INVALID_OUPUT_FORMAT", "USING MediaRecorder.OutputFormat.DEFAULT : "+MediaRecorder.OutputFormat.DEFAULT);
         return MediaRecorder.OutputFormat.DEFAULT;
-
     }
   }
 
@@ -313,12 +312,23 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
       @Override
       public void run() {
         if (!isPaused) {
-          WritableMap body = Arguments.createMap();
-          body.putDouble("currentTime", stopWatch.getTimeSeconds());
-          sendEvent("recordingProgress", body);
+          AudioRecorderManager.this.getReactApplicationContext().runOnNativeModulesQueueThread(new Runnable() {
+            @Override
+            public void run() {
+              WritableMap body = Arguments.createMap();
+              body.putDouble("currentTime", stopWatch.getTimeSeconds());
+              body.putDouble("currentTimeMillis", stopWatch.getTimeMillis());
+              int maxAmplitude = 0;
+              if (recorder != null) {
+                maxAmplitude = recorder.getMaxAmplitude();
+              }
+              body.putInt("currentMetering", maxAmplitude);
+              sendEvent("recordingProgress", body);
+            }
+          });
         }
       }
-    }, 0, 1000);
+    }, 0, 250);
   }
 
   private void stopTimer(){
