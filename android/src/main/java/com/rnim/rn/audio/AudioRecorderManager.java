@@ -65,6 +65,7 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
   private Method pauseMethod = null;
   private Method resumeMethod = null;
 
+  private long progressInterval = 100;
 
   public AudioRecorderManager(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -129,6 +130,9 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
       recorder.setAudioEncodingBitRate(recordingSettings.getInt("AudioEncodingBitRate"));
       recorder.setOutputFile(destFile.getPath());
       includeBase64 = recordingSettings.getBoolean("IncludeBase64");
+      if (recordingSettings.getInt("ProgressInterval") > 0) {
+        progressInterval = recordingSettings.getInt("ProgressInterval");
+      }
     }
     catch(final Exception e) {
       logAndRejectPromise(promise, "COULDNT_CONFIGURE_MEDIA_RECORDER" , "Make sure you've added RECORD_AUDIO permission to your AndroidManifest.xml file "+e.getMessage());
@@ -328,7 +332,7 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
           });
         }
       }
-    }, 0, 100);
+    }, 0, progressInterval);
   }
 
   private void stopTimer(){
