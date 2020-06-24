@@ -130,8 +130,9 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
       recorder.setAudioEncodingBitRate(recordingSettings.getInt("AudioEncodingBitRate"));
       recorder.setOutputFile(destFile.getPath());
       includeBase64 = recordingSettings.getBoolean("IncludeBase64");
-      if (recordingSettings.getInt("ProgressInterval") > 0) {
-        progressInterval = recordingSettings.getInt("ProgressInterval");
+      if (recordingSettings.hasKey("ProgressInterval")) {
+        int interval = recordingSettings.getInt("ProgressInterval");
+        progressInterval = interval > 0 ? interval : progressInterval;
       }
     }
     catch(final Exception e) {
