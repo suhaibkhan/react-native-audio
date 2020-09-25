@@ -211,6 +211,40 @@ class AudioRecorderManager extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void abortRecording(Promise promise){
+    if (!isRecording){
+      logAndRejectPromise(promise, "INVALID_STATE", "Please call startRecording before stopping recording");
+      return; // nothing to abort
+    }
+
+    stopTimer();
+    isRecording = false;
+    isPaused = false;
+
+    try {
+      recorder.stop();
+      recorder.release();
+      stopWatch.stop();
+
+      File f = new File(currentOutputFile);
+      if (f.exists()) {
+        // delete
+        f.delete();
+      }
+
+    } catch (final RuntimeException e) {
+      // https://developer.android.com/reference/android/media/MediaRecorder.html#stop()
+      logAndRejectPromise(promise, "RUNTIME_EXCEPTION", "No valid audio data received. You may be using a device that can't record audio.");
+      return;
+    }
+    finally {
+      recorder = null;
+    }
+
+    promise.resolve(currentOutputFile);
+  }
+
+  @ReactMethod
   public void stopRecording(Promise promise){
     if (!isRecording){
       logAndRejectPromise(promise, "INVALID_STATE", "Please call startRecording before stopping recording");
