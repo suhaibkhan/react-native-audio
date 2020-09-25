@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 
@@ -7,15 +7,16 @@ import ReactNative, {
   NativeAppEventEmitter,
   DeviceEventEmitter,
   PermissionsAndroid,
-  Platform
+  Platform,
 } from "react-native";
 
 var AudioRecorderManager = NativeModules.AudioRecorderManager;
 
 var AudioRecorder = {
-  prepareRecordingAtPath: function(path, options) {
+  prepareRecordingAtPath: function (path, options) {
     if (this.progressSubscription) this.progressSubscription.remove();
-    this.progressSubscription = NativeAppEventEmitter.addListener('recordingProgress',
+    this.progressSubscription = NativeAppEventEmitter.addListener(
+      "recordingProgress",
       (data) => {
         if (this.onProgress) {
           this.onProgress(data);
@@ -24,7 +25,8 @@ var AudioRecorder = {
     );
 
     if (this.finishedSubscription) this.finishedSubscription.remove();
-    this.finishedSubscription = NativeAppEventEmitter.addListener('recordingFinished',
+    this.finishedSubscription = NativeAppEventEmitter.addListener(
+      "recordingFinished",
       (data) => {
         if (this.onFinished) {
           this.onFinished(data);
@@ -35,19 +37,19 @@ var AudioRecorder = {
     var defaultOptions = {
       SampleRate: 44100.0,
       Channels: 2,
-      AudioQuality: 'High',
-      AudioEncoding: 'ima4',
-      OutputFormat: 'mpeg_4',
+      AudioQuality: "High",
+      AudioEncoding: "ima4",
+      OutputFormat: "mpeg_4",
       MeteringEnabled: false,
       MeasurementMode: false,
       AudioEncodingBitRate: 32000,
       IncludeBase64: false,
-      AudioSource: 0
+      AudioSource: 0,
     };
 
-    var recordingOptions = {...defaultOptions, ...options};
+    var recordingOptions = { ...defaultOptions, ...options };
 
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === "ios") {
       AudioRecorderManager.prepareRecordingAtPath(
         path,
         recordingOptions.SampleRate,
@@ -59,38 +61,43 @@ var AudioRecorder = {
         recordingOptions.IncludeBase64
       );
     } else {
-      return AudioRecorderManager.prepareRecordingAtPath(path, recordingOptions);
+      return AudioRecorderManager.prepareRecordingAtPath(
+        path,
+        recordingOptions
+      );
     }
   },
-  startRecording: function() {
+  startRecording: function () {
     return AudioRecorderManager.startRecording();
   },
-  pauseRecording: function() {
+  pauseRecording: function () {
     return AudioRecorderManager.pauseRecording();
   },
-  resumeRecording: function() {
+  resumeRecording: function () {
     return AudioRecorderManager.resumeRecording();
   },
-  stopRecording: function() {
+  stopRecording: function () {
     return AudioRecorderManager.stopRecording();
+  },
+  abortRecording: function () {
+    return AudioRecorderManager.abortRecording();
   },
   checkAuthorizationStatus: AudioRecorderManager.checkAuthorizationStatus,
   requestAuthorization: () => {
-    if (Platform.OS === 'ios')
+    if (Platform.OS === "ios")
       return AudioRecorderManager.requestAuthorization();
     else
       return new Promise((resolve, reject) => {
         PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
-        ).then(result => {
+        ).then((result) => {
           if (result == PermissionsAndroid.RESULTS.GRANTED || result == true)
             resolve(true);
-          else
-            resolve(false)
-        })
+          else resolve(false);
+        });
       });
   },
-  removeListeners: function() {
+  removeListeners: function () {
     if (this.progressSubscription) this.progressSubscription.remove();
     if (this.finishedSubscription) this.finishedSubscription.remove();
   },
@@ -99,14 +106,14 @@ var AudioRecorder = {
 let AudioUtils = {};
 let AudioSource = {};
 
-if (Platform.OS === 'ios') {
+if (Platform.OS === "ios") {
   AudioUtils = {
     MainBundlePath: AudioRecorderManager.MainBundlePath,
     CachesDirectoryPath: AudioRecorderManager.NSCachesDirectoryPath,
     DocumentDirectoryPath: AudioRecorderManager.NSDocumentDirectoryPath,
     LibraryDirectoryPath: AudioRecorderManager.NSLibraryDirectoryPath,
   };
-} else if (Platform.OS === 'android') {
+} else if (Platform.OS === "android") {
   AudioUtils = {
     MainBundlePath: AudioRecorderManager.MainBundlePath,
     CachesDirectoryPath: AudioRecorderManager.CachesDirectoryPath,
@@ -114,7 +121,7 @@ if (Platform.OS === 'ios') {
     LibraryDirectoryPath: AudioRecorderManager.LibraryDirectoryPath,
     PicturesDirectoryPath: AudioRecorderManager.PicturesDirectoryPath,
     MusicDirectoryPath: AudioRecorderManager.MusicDirectoryPath,
-    DownloadsDirectoryPath: AudioRecorderManager.DownloadsDirectoryPath
+    DownloadsDirectoryPath: AudioRecorderManager.DownloadsDirectoryPath,
   };
   AudioSource = {
     DEFAULT: 0,
@@ -130,4 +137,4 @@ if (Platform.OS === 'ios') {
   };
 }
 
-module.exports = {AudioRecorder, AudioUtils, AudioSource};
+module.exports = { AudioRecorder, AudioUtils, AudioSource };
